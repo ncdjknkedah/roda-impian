@@ -575,11 +575,48 @@
   <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
 
   <script>
-    // Konfigurasi & State Permainan
-    const STATE_KEY = 'roda_bertuah_data_v3';
-    const WINNER_EVENT_KEY = 'roda_bertuah_latest_winner_v3';
-    const PARTICIPANT_STATUS_KEY = 'roda_bertuah_participant_status_v3';
-    const ROOM_CODE = 'nih2026'; // ID Bilik untuk sambungan langsung telefon pintar
+    // Pengurusan Bilik Dinamik (Multi-Event / Multi-Room Support)
+    function resolveRoomCode() {
+      let r = null;
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        r = urlParams.get('room');
+      } catch (e) {}
+
+      if (!r || !r.trim()) {
+        try {
+          r = sessionStorage.getItem('last_active_room_code');
+        } catch (e) {}
+
+        if (!r) {
+          // Tetapkan bilik lalai
+          r = 'dewan-1';
+        }
+
+        // Kemaskini URL hanya jika bukan dalam persekitaran blob/preview
+        try {
+          if (window.location.protocol !== 'blob:' && window.history && window.history.replaceState) {
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.set('room', r);
+            window.history.replaceState({}, '', newUrl.toString());
+          }
+        } catch (e) {
+          // Abaikan ralat keselamatan jika berjalan dalam sandbox iframe
+        }
+      }
+
+      r = r.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '') || 'dewan-1';
+      try {
+        sessionStorage.setItem('last_active_room_code', r);
+      } catch (e) {}
+      return r;
+    }
+
+    const ROOM_CODE = resolveRoomCode();
+    // Kunci storan diasingkan khusus untuk bilik acara ini sahaja
+    const STATE_KEY = `roda_bertuah_data_v3_${ROOM_CODE}`;
+    const WINNER_EVENT_KEY = `roda_bertuah_latest_winner_v3_${ROOM_CODE}`;
+    const PARTICIPANT_STATUS_KEY = `roda_bertuah_participant_status_v3_${ROOM_CODE}`;
 
     let appState = {
       eventTitle: 'Cabutan Bertuah Anda',
@@ -759,6 +796,28 @@
     function generatePlayerUrl() {
       const baseUrl = window.location.href.split('?')[0].split('#')[0];
       return `${baseUrl}?role=player&room=${ROOM_CODE}`;
+    }
+
+    function changeRoomPrompt() {
+      const newRoom = window.prompt("Masukkan Kod Bilik / Nama Acara (Contoh: dewan-a, nih-2026, dewan-anggerik):", ROOM_CODE);
+      if (newRoom && newRoom.trim() && newRoom.trim() !== ROOM_CODE) {
+        const clean = newRoom.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
+        try {
+          sessionStorage.setItem('last_active_room_code', clean);
+        } catch (e) {}
+
+        try {
+          if (window.location.protocol !== 'blob:') {
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.set('room', clean);
+            window.location.href = newUrl.toString();
+          } else {
+            window.location.reload();
+          }
+        } catch (e) {
+          window.location.reload();
+        }
+      }
     }
 
     function initQRCodes() {
@@ -1516,6 +1575,10 @@
     });
 
     window.addEventListener("DOMContentLoaded", () => {
+      // Paparkan kod bilik semasa di panel kawalan
+      const roomLabel = document.getElementById("currentRoomCodeLabel");
+      if (roomLabel) roomLabel.innerText = ROOM_CODE;
+
       loadState();
       initQRCodes();
 
