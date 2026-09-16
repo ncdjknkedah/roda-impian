@@ -692,7 +692,7 @@
           id: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
           number: formattedNum,
           name: data.name,
-          dept: data.dept || 'Peserta Dewan',
+          dept: data.dept ? data.dept.trim() : '',
           timestamp: new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' })
         };
 
@@ -920,7 +920,6 @@
         return;
       }
 
-      // Jika pendaftaran secara setempat (fallback)
       const nextNum = appState.participants.length + 1;
       const formattedNum = `#${String(nextNum).padStart(3, '0')}`;
 
@@ -928,7 +927,7 @@
         id: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
         number: formattedNum,
         name: name,
-        dept: dept || "Peserta Dewan",
+        dept: dept,
         timestamp: new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' })
       };
 
@@ -973,130 +972,10 @@
       document.getElementById("playerChipCard").classList.remove("hidden");
       document.getElementById("playerChipNumber").innerText = p.number;
       document.getElementById("playerChipName").innerText = p.name;
-      document.getElementById("playerChipDept").innerText = p.dept;
-    }
-
-    // Paparkan Halaman Penuh Penghargaan dan padam nombor sepenuhnya dari telefon
-    function showPlayerThanksPage(msg) {
-      // Padam nombor dari storan sesi agar tidak boleh diundur/dilihat lagi
-      sessionStorage.removeItem('my_lucky_chip_number');
-
-      document.getElementById("playerRegCard").classList.add("hidden");
-      document.getElementById("playerChipCard").classList.add("hidden");
-      document.getElementById("playerWinnerOverlay").classList.add("opacity-0", "pointer-events-none");
-
-      const thanksPage = document.getElementById("playerThanksPage");
-      const msgElem = document.getElementById("thanksPageMessage");
-      if (msgElem) msgElem.innerText = msg;
-      
-      thanksPage.classList.remove("hidden");
-      thanksPage.classList.add("flex");
-    }
-
-    let audioContext = null;
-    let ringInterval = null; // Pengulang deringan loceng berterusan
-    let lastTickTime = 0;
-
-    function getAudioCtx() {
-      if (!audioContext) {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        audioContext = new AudioCtx();
-      }
-      if (audioContext.state === 'suspended') {
-        audioContext.resume();
-      }
-      return audioContext;
-    }
-
-    // Bunyi klik mekanikal jarum roda (Ratchet tick dipertingkatkan & lebih nyaring)
-    function playTick() {
-      try {
-        const ctx = getAudioCtx();
-        const now = ctx.currentTime;
-        // Elakkan kelesuan audio apabila hirisan roda mencecah 500 segmen
-        if (now - lastTickTime < 0.022) return;
-        lastTickTime = now;
-
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = "triangle";
-        osc.frequency.setValueAtTime(950, now);
-        osc.frequency.exponentialRampToValueAtTime(180, now + 0.03);
-        
-        gain.gain.setValueAtTime(0.22, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
-
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(now);
-        osc.stop(now + 0.035);
-      } catch(e) {}
-    }
-
-    // Bunyi Loceng Logam Nyaring "KRRRIIIINNNNGGGG!" Panjang & Menggegarkan
-    function playKringKring() {
-      try {
-        const ctx = getAudioCtx();
-        const now = ctx.currentTime;
-        
-        // Dua frekuensi nada loceng loyang nyaring (dual brass bell)
-        const bellFrequencies = [1980, 2520];
-
-        bellFrequencies.forEach((baseFreq) => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-
-          // Modulator pemukul loceng mekanikal bergetar (19Hz) menghasilkan kesan "KRRRIIIINNNGGGG"
-          const clapperTremolo = ctx.createOscillator();
-          const clapperGain = ctx.createGain();
-          clapperTremolo.type = "sine";
-          clapperTremolo.frequency.setValueAtTime(19, now); // Getaran pukulan 19 kali sesaat
-          clapperGain.gain.setValueAtTime(0.5, now);
-
-          clapperTremolo.connect(clapperGain.gain);
-
-          osc.type = "sine";
-          osc.frequency.setValueAtTime(baseFreq, now);
-
-          // Kelantangan tinggi dan bergema selama 1.3 saat
-          gain.gain.setValueAtTime(0.01, now);
-          gain.gain.linearRampToValueAtTime(0.4, now + 0.04);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 1.25);
-
-          clapperGain.connect(gain.gain);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-
-          clapperTremolo.start(now);
-          osc.start(now);
-          clapperTremolo.stop(now + 1.3);
-          osc.stop(now + 1.3);
-        });
-
-        // Getaran telefon mengikut deringan KRRRIIIINNGGG
-        if (navigator.vibrate) {
-          navigator.vibrate([400, 80, 400, 80, 600]);
-        }
-      } catch(e) {}
-    }
-
-    // Deringkan telefon secara berterusan sehingga butang henti ditekan
-    function startContinuousRinging() {
-      stopPhoneAlarm();
-      getAudioCtx();
-      playKringKring();
-      ringInterval = setInterval(() => {
-        playKringKring();
-      }, 1600);
-    }
-
-    function stopPhoneAlarm() {
-      if (ringInterval) {
-        clearInterval(ringInterval);
-        ringInterval = null;
-      }
-      if (navigator.vibrate) {
-        navigator.vibrate(0); // Hentikan sebarang getaran
+      const deptEl = document.getElementById("playerChipDept");
+      if (deptEl) {
+        deptEl.innerText = p.dept || '';
+        deptEl.style.display = p.dept ? 'block' : 'none';
       }
     }
 
@@ -1265,7 +1144,11 @@
       // Paparkan keputusan pada skrin dewan
       document.getElementById("modalWinnerBadge").innerText = winner.number;
       document.getElementById("modalWinnerName").innerText = winner.name;
-      document.getElementById("modalWinnerDept").innerText = winner.dept;
+      const modalDept = document.getElementById("modalWinnerDept");
+      if (modalDept) {
+        modalDept.innerText = winner.dept || '';
+        modalDept.style.display = winner.dept ? 'block' : 'none';
+      }
 
       const modal = document.getElementById("hostWinnerModal");
       const card = document.getElementById("hostWinnerCard");
@@ -1373,7 +1256,7 @@
               <span class="font-mono font-black text-amber-400 px-2 py-0.5 bg-amber-400/10 rounded border border-amber-400/20">${p.number}</span>
               <div>
                 <span class="font-bold text-slate-200">${escapeHtml(p.name)}</span>
-                <span class="text-[10px] text-slate-400 block">${escapeHtml(p.dept)}</span>
+                ${p.dept ? `<span class="text-[10px] text-slate-400 block">${escapeHtml(p.dept)}</span>` : ''}
               </div>
             </div>
             <span class="text-[10px] text-slate-500 font-mono">${p.timestamp}</span>
@@ -1395,7 +1278,7 @@
                   <span>${escapeHtml(w.name)}</span>
                   <span class="text-[10px] font-mono text-amber-300">(${w.number})</span>
                 </div>
-                <span class="text-[10px] text-slate-400">${escapeHtml(w.dept)}</span>
+                ${w.dept ? `<span class="text-[10px] text-slate-400">${escapeHtml(w.dept)}</span>` : ''}
               </div>
             </div>
             <span class="text-[10px] text-amber-400/80 font-mono">${w.wonAt}</span>
