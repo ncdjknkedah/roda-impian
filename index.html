@@ -38,6 +38,34 @@
       pointer-events: none;
     }
 
+    /* Teks Tajuk Bergerak (Marquee) untuk Tajuk Panjang */
+    @keyframes marqueeScroll {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee-track {
+      display: inline-flex;
+      white-space: nowrap;
+      will-change: transform;
+      animation: marqueeScroll 18s linear infinite;
+    }
+    .marquee-track:hover {
+      animation-play-state: paused;
+    }
+
+    /* Animasi kocokan rawak roda */
+    @keyframes shuffleShake {
+      0% { transform: scale(1) rotate(0deg); }
+      20% { transform: scale(1.02) rotate(-8deg); }
+      40% { transform: scale(0.98) rotate(12deg); }
+      60% { transform: scale(1.02) rotate(-14deg); }
+      80% { transform: scale(0.99) rotate(8deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+    .wheel-shuffling {
+      animation: shuffleShake 0.65s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+    }
+
     /* Denyutan cahaya pada butang putar */
     @keyframes pulseGlow {
       0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
@@ -153,6 +181,12 @@
       <button onclick="toggleFullscreen()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700" title="Skrin Penuh Projektor">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
       </button>
+
+      <!-- Butang Simpan/Buka Panel Sisi Dewan -->
+      <button id="btnToggleSidebar" onclick="toggleSidebar()" class="px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 transition shadow" title="Sorok atau Buka Panel Sisi">
+        <span id="toggleSidebarIcon">◀</span>
+        <span id="toggleSidebarText" class="hidden sm:inline">Sorok Panel</span>
+      </button>
     </div>
   </header>
 
@@ -160,24 +194,44 @@
   <main id="hostView" class="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
     
     <!-- Bahagian Roda Impian Utama -->
-    <section class="flex-1 flex flex-col items-center justify-center p-3 sm:p-6 relative">
+    <section id="wheelSection" class="flex-1 flex flex-col items-center justify-center p-2 sm:p-5 relative transition-all duration-300 w-full">
       
-      <!-- Tajuk Majlis (Boleh diklik untuk edit) -->
-      <div class="text-center mb-1 z-10">
-        <input id="eventTitleInput" type="text" value="NIH AI DAY 2026" oninput="updateEventTitle(this.value)" class="text-2xl sm:text-4xl font-black bg-transparent text-center text-amber-400 tracking-wide border-b border-transparent hover:border-slate-700 focus:border-indigo-500 focus:outline-none transition pb-0.5">
-        <p class="text-xs sm:text-sm text-slate-400 mt-0.5">Imbas Kod QR untuk mendaftar & merebut <span class="text-amber-400 font-bold">Cip Nombor Bertuah</span></p>
+      <!-- Tajuk Majlis Pintar: Boleh Edit & Teks Bergerak Jika Panjang -->
+      <div class="text-center mb-1 z-10 w-full max-w-2xl px-4 flex flex-col items-center">
+        <div class="w-full relative overflow-hidden flex items-center justify-center py-1">
+          <!-- Input tajuk boleh edit semasa hover/fokus -->
+          <input id="eventTitleInput" type="text" value="Cabutan Bertuah Anda" oninput="updateEventTitle(this.value)" class="text-2xl sm:text-4xl font-black bg-transparent text-center text-amber-400 tracking-wide border-b border-transparent hover:border-slate-700 focus:border-indigo-500 focus:outline-none transition pb-0.5 w-full">
+        </div>
+        <!-- Kontena teks marquee bergerak sekiranya tajuk sangat panjang -->
+        <div id="marqueeContainer" class="w-full overflow-hidden text-amber-300/90 text-xs sm:text-sm font-semibold mt-0.5 hidden">
+          <div class="marquee-track" id="marqueeTrack">
+            <span id="marqueeText1" class="px-4">Cabutan Bertuah Anda</span>
+            <span class="text-amber-500">•</span>
+            <span id="marqueeText2" class="px-4">Cabutan Bertuah Anda</span>
+            <span class="text-amber-500">•</span>
+          </div>
+        </div>
+        <p class="text-xs text-slate-400 mt-1">Imbas Kod QR untuk mendaftar & merebut <span class="text-amber-400 font-bold">Cip Nombor Bertuah</span></p>
+      </div>
+
+      <!-- Butang Tepi Mengapung: Rawakkan Giliran (Tidak ganggu roda bawah) -->
+      <div class="absolute top-4 left-4 z-20 flex flex-col gap-2">
+        <button onclick="shuffleParticipants()" class="px-3.5 py-2 bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-amber-400 border border-slate-700 hover:border-amber-400/50 font-bold text-xs rounded-xl transition active:scale-95 flex items-center gap-1.5 shadow-xl backdrop-blur">
+          <span class="text-sm">🔀</span>
+          <span class="hidden sm:inline">Rawakkan Giliran</span>
+        </button>
       </div>
 
       <!-- Bekas Roda Canvas & Jarum Penunjuk -->
-      <div class="relative flex items-center justify-center max-w-[92vw] max-h-[68vh] aspect-square my-auto">
+      <div id="wheelWrapper" class="relative flex items-center justify-center max-w-[95vw] max-h-[76vh] aspect-square my-auto transition-transform duration-300">
         <!-- Jarum Penunjuk Sebelah Kanan (Menunjuk ke kiri seperti foto pentas NIH AI DAY) -->
         <div class="wheel-pointer"></div>
 
         <!-- Canvas Roda -->
-        <canvas id="wheelCanvas" width="1200" height="1200" class="w-[330px] h-[330px] sm:w-[480px] sm:h-[480px] lg:w-[600px] lg:h-[600px] rounded-full drop-shadow-2xl cursor-pointer active:scale-[0.99] transition-transform"></canvas>
+        <canvas id="wheelCanvas" width="1200" height="1200" class="w-[330px] h-[330px] sm:w-[500px] sm:h-[500px] lg:w-[620px] lg:h-[620px] rounded-full drop-shadow-2xl cursor-pointer active:scale-[0.99] transition-transform"></canvas>
 
         <!-- Hab Logo Pusat Roda (Kamera Aperture Style seperti foto pentas) -->
-        <div onclick="spinWheel()" class="absolute w-24 h-24 sm:w-36 sm:h-36 rounded-full bg-slate-950 shadow-2xl border-4 border-amber-400 flex flex-col items-center justify-center cursor-pointer hover:scale-105 active:scale-95 transition group z-20">
+        <div onclick="spinWheel()" class="absolute w-24 h-24 sm:w-36 sm:h-36 rounded-full bg-slate-950 shadow-2xl border-4 border-amber-400 flex flex-col items-center justify-center cursor-pointer hover:scale-105 active:scale-95 transition group z-20" title="Klik untuk putarkan roda!">
           <div class="w-16 h-16 sm:w-24 sm:h-24 rounded-full border border-slate-700 flex flex-col items-center justify-center p-1 text-center bg-slate-900 group-hover:bg-indigo-950/60 transition">
             <span class="text-[9px] sm:text-[11px] font-black text-amber-400 tracking-widest uppercase">PUTAR</span>
             <span id="centerTextLabel" class="text-[10px] sm:text-xs font-black text-white leading-tight">RODA</span>
@@ -186,22 +240,16 @@
         </div>
       </div>
 
-      <!-- Butang Kawalan Putaran Pentas -->
-      <div class="mt-3 flex flex-wrap items-center justify-center gap-3 z-10">
-        <button id="mainSpinBtn" onclick="spinWheel()" class="pulse-glow px-8 py-3.5 bg-gradient-to-r from-rose-600 via-indigo-600 to-amber-500 hover:opacity-95 text-white font-black text-base sm:text-lg rounded-full shadow-2xl transition active:scale-95 flex items-center gap-2.5">
-          <span>🎡</span>
-          <span id="btnSpinText">PUTAR RODA SEKARANG</span>
-        </button>
-
-        <button onclick="shuffleParticipants()" class="px-4 py-3 bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-xs sm:text-sm rounded-full transition active:scale-95 flex items-center gap-1.5 shadow">
-          🔀 Rawakkan Giliran
-        </button>
-      </div>
+      <!-- Butang Terapung Pembuka Panel (Muncul hanya bila panel sisi disorokkan) -->
+      <button id="btnFloatingShowSidebar" onclick="toggleSidebar()" class="fixed bottom-5 right-5 z-40 px-4 py-2.5 rounded-full bg-indigo-600/90 hover:bg-indigo-500 text-white font-bold text-xs shadow-2xl border border-indigo-400/40 backdrop-blur hidden items-center gap-2 transition active:scale-95">
+        <span>📋 Papar Panel Urus Setia</span>
+        <span>▶</span>
+      </button>
 
     </section>
 
-    <!-- Panel Sisi Pengacara / Urus Setia -->
-    <aside class="w-full lg:w-[430px] bg-slate-900/95 border-t lg:border-t-0 lg:border-l border-slate-800 flex flex-col max-h-[50vh] lg:max-h-none shadow-2xl z-30">
+    <!-- Panel Sisi Pengacara / Urus Setia (Boleh disorokkan untuk besarkan roda) -->
+    <aside id="hostSidebar" class="w-full lg:w-[420px] bg-slate-900/95 border-t lg:border-t-0 lg:border-l border-slate-800 flex flex-col max-h-[50vh] lg:max-h-none shadow-2xl z-30 transition-all duration-300">
       
       <!-- Kad Kod QR Interaktif Dewan -->
       <div class="p-4 border-b border-slate-800 bg-slate-950/60">
@@ -378,10 +426,28 @@
         <p class="text-[11px] text-slate-400">Perhatikan skrin dewan semasa roda impian diputarkan.</p>
         
         <button onclick="testPhoneChime()" class="mt-3 px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-amber-300 text-xs font-bold border border-slate-700 transition">
-          🔔 Uji Bunyi Chime Telefon
+          🔔 Uji Bunyi Kring Kring Telefon
         </button>
       </div>
 
+    </div>
+
+    <!-- Modal Pop-Up Penghargaan Peserta (Bila nama dikeluarkan / permainan tamat) -->
+    <div id="playerThanksModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+      <div class="bg-slate-900 rounded-3xl border-2 border-amber-400/50 max-w-sm w-full p-6 text-center shadow-2xl">
+        <div class="w-16 h-16 rounded-full bg-amber-400/20 text-amber-400 text-3xl flex items-center justify-center mx-auto mb-3">
+          ✨
+        </div>
+        <h3 class="text-xl font-black text-white">Terima Kasih!</h3>
+        <p id="thanksModalMessage" class="text-xs text-slate-300 mt-2 leading-relaxed">
+          Terima kasih atas penyertaan anda dalam cabutan bertuah ini. Semoga rezeki menyebelahi anda di masa akan datang!
+        </p>
+        <div class="mt-5">
+          <button onclick="dismissPlayerThanksModal()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold rounded-xl text-xs transition border border-slate-700">
+            Tutup Makluman
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Paparan Skrin Kemenangan Pada Telefon Peserta (Melodi Ceria) -->
@@ -505,10 +571,11 @@
     // Konfigurasi & State Permainan
     const STATE_KEY = 'roda_bertuah_data_v3';
     const WINNER_EVENT_KEY = 'roda_bertuah_latest_winner_v3';
+    const PARTICIPANT_STATUS_KEY = 'roda_bertuah_participant_status_v3';
     const ROOM_CODE = 'nih2026'; // ID Bilik untuk sambungan langsung telefon pintar
 
     let appState = {
-      eventTitle: 'NIH AI DAY 2026',
+      eventTitle: 'Cabutan Bertuah Anda',
       isRegistrationOpen: true,
       participants: [], // { id, number, name, dept, timestamp }
       winners: []
@@ -519,6 +586,7 @@
     let spinDuration = 7000;
     let currentWinningParticipant = null;
     let currentRole = 'host'; // 'host' atau 'player'
+    let isSidebarCollapsed = false;
 
     // Palet warna cerah bergaya neon untuk roda
     const WHEEL_PALETTE = [
@@ -634,11 +702,55 @@
       if (data.type === 'REGISTER_SUCCESS') {
         sessionStorage.setItem('my_lucky_chip_number', data.participant.number);
         showPlayerChip(data.participant);
-        playCelebrationChime();
+        playKringKring();
         showNotice("🎉 Berjaya mendaftar! Cip anda telah dimasukkan ke roda pentas.");
       } else if (data.type === 'WINNER_ANNOUNCED') {
         checkIfCurrentDeviceWon(data.winnerNumber, data.winnerName);
+      } else if (data.type === 'PARTICIPANT_REMOVED') {
+        const myNum = sessionStorage.getItem('my_lucky_chip_number');
+        if (myNum && myNum === data.targetNumber) {
+          showPlayerThanksModal("Nombor cip anda telah dipanggil dan dikeluarkan dari roda. Terima kasih banyak atas penyertaan anda!");
+        }
+      } else if (data.type === 'GAME_RESET') {
+        showPlayerThanksModal("Permainan cabutan bertuah telah diset semula oleh penganjur. Terima kasih atas penyertaan anda dalam acara ini!");
       }
+    }
+
+    // Fungsi Sorokkan / Buka Panel Sisi untuk Membesarkan Roda
+    function toggleSidebar() {
+      const sidebar = document.getElementById("hostSidebar");
+      const floatingBtn = document.getElementById("btnFloatingShowSidebar");
+      const toggleText = document.getElementById("toggleSidebarText");
+      const toggleIcon = document.getElementById("toggleSidebarIcon");
+      const wheelWrapper = document.getElementById("wheelWrapper");
+      const wheelCanvas = document.getElementById("wheelCanvas");
+
+      isSidebarCollapsed = !isSidebarCollapsed;
+
+      if (isSidebarCollapsed) {
+        sidebar.classList.add("hidden");
+        floatingBtn.classList.remove("hidden");
+        floatingBtn.classList.add("flex");
+        if (toggleText) toggleText.innerText = "Buka Panel";
+        if (toggleIcon) toggleIcon.innerText = "▶";
+        
+        // Besarkan paparan roda apabila panel disorokkan
+        wheelCanvas.classList.remove("lg:w-[620px]", "lg:h-[620px]");
+        wheelCanvas.classList.add("lg:w-[750px]", "lg:h-[750px]");
+        showNotice("🔍 Roda dibesarkan untuk skrin pentas.");
+      } else {
+        sidebar.classList.remove("hidden");
+        floatingBtn.classList.add("hidden");
+        floatingBtn.classList.remove("flex");
+        if (toggleText) toggleText.innerText = "Sorok Panel";
+        if (toggleIcon) toggleIcon.innerText = "◀";
+
+        // Kembalikan saiz biasa
+        wheelCanvas.classList.remove("lg:w-[750px]", "lg:h-[750px]");
+        wheelCanvas.classList.add("lg:w-[620px]", "lg:h-[620px]");
+      }
+
+      drawWheel();
     }
 
     function generatePlayerUrl() {
@@ -740,7 +852,20 @@
     }
 
     function updateEventTitle(val) {
-      appState.eventTitle = val.trim() || 'NIH AI DAY 2026';
+      appState.eventTitle = val.trim() || 'Cabutan Bertuah Anda';
+      const marqueeBox = document.getElementById("marqueeContainer");
+      const text1 = document.getElementById("marqueeText1");
+      const text2 = document.getElementById("marqueeText2");
+      
+      // Jika teks lebih 24 aksara, hidupkan teks marquee bergerak
+      if (appState.eventTitle.length > 24) {
+        marqueeBox.classList.remove("hidden");
+        text1.innerText = appState.eventTitle;
+        text2.innerText = appState.eventTitle;
+      } else {
+        marqueeBox.classList.add("hidden");
+      }
+
       document.getElementById("playerEventSub").innerText = appState.eventTitle;
       document.getElementById("modalEventTitle").innerText = appState.eventTitle;
       document.getElementById("printEventTitle").innerText = appState.eventTitle;
@@ -797,7 +922,7 @@
 
       sessionStorage.setItem('my_lucky_chip_number', formattedNum);
       showPlayerChip(newParticipant);
-      playCelebrationChime();
+      playKringKring();
       showNotice("🎉 Pendaftaran berjaya! Nama anda dimasukkan ke roda pentas.");
     }
 
@@ -835,6 +960,18 @@
       document.getElementById("playerChipDept").innerText = p.dept;
     }
 
+    function showPlayerThanksModal(msg) {
+      const modal = document.getElementById("playerThanksModal");
+      const msgElem = document.getElementById("thanksModalMessage");
+      if (msgElem) msgElem.innerText = msg;
+      modal.classList.remove("opacity-0", "pointer-events-none");
+    }
+
+    function dismissPlayerThanksModal() {
+      const modal = document.getElementById("playerThanksModal");
+      modal.classList.add("opacity-0", "pointer-events-none");
+    }
+
     let audioContext = null;
     function getAudioCtx() {
       if (!audioContext) {
@@ -865,43 +1002,53 @@
       } catch(e) {}
     }
 
-    // Bunyi Chime Keraian yang Ceria & Merdu (Melodic Harp Fanfare)
-    function playCelebrationChime() {
+    // Bunyi Loceng "Kring-Kring" Logam yang Ceria (Classic Mechanical Bell)
+    function playKringKring() {
       try {
         const ctx = getAudioCtx();
-        // Melodi Ceria Pentatonik Major (C5, E5, G5, B5, C6, E6)
-        const notes = [523.25, 659.25, 783.99, 987.77, 1046.50, 1318.51];
+        const now = ctx.currentTime;
         
-        notes.forEach((freq, idx) => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          
-          osc.type = "sine";
-          const startTime = ctx.currentTime + (idx * 0.1);
-          osc.frequency.setValueAtTime(freq, startTime);
-          
-          gain.gain.setValueAtTime(0, startTime);
-          gain.gain.linearRampToValueAtTime(0.16, startTime + 0.03);
-          gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.65);
-          
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          
-          osc.start(startTime);
-          osc.stop(startTime + 0.7);
+        // Dua fasa deringan pantas "Kring... Kring!"
+        const bursts = [0, 0.32];
+
+        bursts.forEach(bOffset => {
+          const burstStart = now + bOffset;
+          // Setiap fasa ada 8 ketukan pantas mikro menghasilkan deringan bergetar
+          for (let i = 0; i < 8; i++) {
+            const strikeTime = burstStart + (i * 0.026);
+            
+            // Nada harmonik loceng logam (Frekuensi tinggi berkembar: 2150Hz & 2780Hz)
+            [2150, 2780].forEach((freq, idx) => {
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              
+              osc.type = "sine";
+              osc.frequency.setValueAtTime(freq + (idx * 40) + (i % 2 === 0 ? 30 : -30), strikeTime);
+
+              gain.gain.setValueAtTime(0, strikeTime);
+              gain.gain.linearRampToValueAtTime(0.18, strikeTime + 0.004);
+              gain.gain.exponentialRampToValueAtTime(0.001, strikeTime + 0.05);
+
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+
+              osc.start(strikeTime);
+              osc.stop(strikeTime + 0.055);
+            });
+          }
         });
 
-        // Getaran telefon mengikut rentak kemenangan jika disokong
+        // Getaran telefon mengikut corak deringan Kring-Kring
         if (navigator.vibrate) {
-          navigator.vibrate([150, 80, 150, 80, 350]);
+          navigator.vibrate([220, 90, 220, 120, 300]);
         }
       } catch(e) {}
     }
 
     function testPhoneChime() {
       getAudioCtx();
-      playCelebrationChime();
-      showNotice("🔔 Melodi Chime ceria diuji!");
+      playKringKring();
+      showNotice("🔔 Bunyi Kring Kring diuji!");
     }
 
     function drawWheel() {
@@ -995,8 +1142,6 @@
 
       getAudioCtx();
       isSpinning = true;
-      document.getElementById("mainSpinBtn").disabled = true;
-      document.getElementById("btnSpinText").innerText = "SEDANG MEMUTAR...";
 
       const total = appState.participants.length;
       const arcSize = (2 * Math.PI) / total;
@@ -1032,9 +1177,6 @@
           requestAnimationFrame(frame);
         } else {
           isSpinning = false;
-          document.getElementById("mainSpinBtn").disabled = false;
-          document.getElementById("btnSpinText").innerText = "PUTAR RODA SEKARANG";
-
           currentWinningParticipant = appState.participants[winningIndex];
           handleWin(currentWinningParticipant);
         }
@@ -1044,7 +1186,7 @@
     }
 
     function handleWin(winner) {
-      playCelebrationChime();
+      playKringKring();
       launchConfetti();
 
       // Hantar isyarat menang ke semua telefon peserta yang bersambung
@@ -1081,15 +1223,31 @@
 
     function hostRemoveWinner() {
       if (currentWinningParticipant) {
+        const removedNum = currentWinningParticipant.number;
         appState.winners.unshift({
           ...currentWinningParticipant,
           wonAt: new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
         });
         appState.participants = appState.participants.filter(p => p.number !== currentWinningParticipant.number);
         saveState();
+
+        // Maklumkan telefon pemenang bahawa nombornya dikeluarkan bersama pop-up penghargaan
+        broadcastParticipantRemoved(removedNum);
       }
       closeHostWinnerModal();
       showNotice("Nombor pemenang telah dikeluarkan dari roda cabutan.");
+    }
+
+    function broadcastParticipantRemoved(number) {
+      const eventData = {
+        type: 'PARTICIPANT_REMOVED',
+        targetNumber: number,
+        time: Date.now()
+      };
+      peerConnections.forEach(conn => {
+        try { conn.send(eventData); } catch(e) {}
+      });
+      localStorage.setItem(PARTICIPANT_STATUS_KEY, JSON.stringify(eventData));
     }
 
     function hostKeepWinner() {
@@ -1115,7 +1273,7 @@
     function checkIfCurrentDeviceWon(winnerNumber, winnerName) {
       const myNumber = sessionStorage.getItem('my_lucky_chip_number');
       if (myNumber && myNumber === winnerNumber) {
-        playCelebrationChime();
+        playKringKring();
         const overlay = document.getElementById("playerWinnerOverlay");
         document.getElementById("winnerOverlayCode").innerText = winnerNumber;
         document.getElementById("winnerOverlayName").innerText = winnerName;
@@ -1225,14 +1383,28 @@
       showNotice(`⚡ Ditambah ${count} peserta! Jumlah semasa: ${appState.participants.length}`);
     }
 
+    // Fungsi Rawakkan Giliran dengan Kesan Animasi Kocokan Roda Secara Visual
     function shuffleParticipants() {
       if (isSpinning || appState.participants.length <= 1) return;
+
+      // Animasi getaran kocokan pada roda
+      const canvasElem = document.getElementById("wheelCanvas");
+      canvasElem.classList.add("wheel-shuffling");
+      setTimeout(() => {
+        canvasElem.classList.remove("wheel-shuffling");
+      }, 700);
+
+      // Kocok peserta
       for (let i = appState.participants.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [appState.participants[i], appState.participants[j]] = [appState.participants[j], appState.participants[i]];
       }
+
+      // Beri sedikit lonjakan putaran rawak untuk visualisasi kedudukan baru
+      currentAngle += (Math.random() * 2 + 1);
       saveState();
-      showNotice("🔀 Susunan nama telah dirawakkan!");
+      playTick();
+      showNotice("🔀 Kedudukan nama di roda telah dirawakkan!");
     }
 
     function clearWinnersHistory() {
@@ -1246,6 +1418,14 @@
       appState.winners = [];
       appState.isRegistrationOpen = true;
       saveState();
+
+      // Siarkan makluman penamatan permainan ke semua telefon peserta
+      const resetEvent = { type: 'GAME_RESET', time: Date.now() };
+      peerConnections.forEach(conn => {
+        try { conn.send(resetEvent); } catch(e) {}
+      });
+      localStorage.setItem(PARTICIPANT_STATUS_KEY, JSON.stringify(resetEvent));
+
       showNotice("Permainan telah diset semula sepenuhnya!");
     }
 
@@ -1290,8 +1470,15 @@
           appState = JSON.parse(saved);
         }
       } catch (e) {}
+      
+      // Default tajuk jika tiada
+      if (!appState.eventTitle) {
+        appState.eventTitle = 'Cabutan Bertuah Anda';
+      }
+
       if (document.getElementById("eventTitleInput")) {
-        document.getElementById("eventTitleInput").value = appState.eventTitle || 'NIH AI DAY 2026';
+        document.getElementById("eventTitleInput").value = appState.eventTitle;
+        updateEventTitle(appState.eventTitle);
       }
       renderUI();
       drawWheel();
@@ -1309,6 +1496,12 @@
         try {
           const data = JSON.parse(e.newValue);
           checkIfCurrentDeviceWon(data.winnerNumber, data.winnerName);
+        } catch(err) {}
+      }
+      if (e.key === PARTICIPANT_STATUS_KEY && e.newValue) {
+        try {
+          const data = JSON.parse(e.newValue);
+          handleIncomingHostBroadcast(data);
         } catch(err) {}
       }
     });
