@@ -161,21 +161,23 @@
 
     <!-- Kawalan Pentas / Butang Skrin Penuh -->
     <div class="flex items-center gap-2">
-      <!-- Pautan Mod (Hanya dipaparkan jika pentadbir ingin menyemak mod secara manual) -->
-      <div class="hidden sm:flex items-center bg-slate-900 border border-slate-800 rounded-lg p-0.5 text-xs">
-        <button id="viewSwitchBtnHost" onclick="switchView('host')" class="px-2.5 py-1 rounded font-bold bg-indigo-600 text-white shadow">
-          🖥️ Skrin Pentas
-        </button>
-        <button id="viewSwitchBtnPlayer" onclick="switchView('player')" class="px-2.5 py-1 rounded font-semibold text-slate-400 hover:text-white">
-          📱 Slip Peserta
+      <!-- Pautan Mod & Butang Rawakkan Giliran Bersebelahan Skrin Pentas -->
+      <div class="flex items-center gap-1.5">
+        <div class="hidden sm:flex items-center bg-slate-900 border border-slate-800 rounded-lg p-0.5 text-xs">
+          <button id="viewSwitchBtnHost" onclick="switchView('host')" class="px-2.5 py-1 rounded font-bold bg-indigo-600 text-white shadow">
+            🖥️ Skrin Pentas
+          </button>
+          <button id="viewSwitchBtnPlayer" onclick="switchView('player')" class="px-2.5 py-1 rounded font-semibold text-slate-400 hover:text-white">
+            📱 Slip Peserta
+          </button>
+        </div>
+
+        <!-- Butang Rawakkan Giliran Dipindahkan ke Sebelah Skrin Pentas -->
+        <button onclick="shuffleParticipants()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 hover:text-amber-300 border border-slate-700 font-bold text-xs rounded-lg transition active:scale-95 flex items-center gap-1.5 shadow" title="Rawakkan susunan giliran peserta di roda">
+          <span>🔀</span>
+          <span class="hidden md:inline">Rawakkan Giliran</span>
         </button>
       </div>
-
-      <!-- Butang Besarkan QR Skrin Dewan -->
-      <button onclick="openEnlargedQrModal()" class="px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/40 text-xs font-bold flex items-center gap-1.5 transition" title="Besarkan Kod QR di Skrin Dewan">
-        <span>🔍</span>
-        <span class="hidden md:inline">Besarkan QR Dewan</span>
-      </button>
 
       <!-- Butang Skrin Penuh Projektor -->
       <button onclick="toggleFullscreen()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700" title="Skrin Penuh Projektor">
@@ -196,30 +198,21 @@
     <!-- Bahagian Roda Impian Utama -->
     <section id="wheelSection" class="flex-1 flex flex-col items-center justify-between p-3 sm:p-6 relative transition-all duration-300 w-full">
       
-      <!-- Tajuk Majlis Pintar (Paparan Bersih Tanpa Input di Skrin Dewan) -->
-      <div class="text-center z-10 w-full max-w-3xl px-4 flex flex-col items-center mb-2">
-        <div id="eventTitleDisplayContainer" class="w-full relative overflow-hidden flex items-center justify-center py-1">
+      <!-- Tajuk Majlis Pintar: Sebelah Kiri Atas Skrin (Sama seperti paparan foto pentas NIH AI DAY) -->
+      <div class="w-full px-4 sm:px-8 pt-2 pb-1 z-10 flex flex-col items-start text-left">
+        <div id="eventTitleDisplayContainer" class="max-w-full overflow-hidden">
           <!-- Tajuk statik jika pendek -->
-          <h2 id="eventTitleStatic" class="text-2xl sm:text-4xl font-black text-amber-400 tracking-wide text-center drop-shadow-md">Cabutan Bertuah Anda</h2>
+          <h2 id="eventTitleStatic" class="text-2xl sm:text-4xl lg:text-5xl font-black text-amber-400 tracking-tight text-left drop-shadow-md">Cabutan Bertuah Anda</h2>
         </div>
         <!-- Kontena teks marquee bergerak sekiranya tajuk sangat panjang -->
-        <div id="marqueeContainer" class="w-full overflow-hidden text-amber-300 text-sm sm:text-lg font-extrabold py-1 hidden">
+        <div id="marqueeContainer" class="w-full max-w-2xl overflow-hidden text-amber-300 text-base sm:text-2xl font-black py-1 hidden">
           <div class="marquee-track" id="marqueeTrack">
-            <span id="marqueeText1" class="px-6">Cabutan Bertuah Anda</span>
+            <span id="marqueeText1" class="pr-8">Cabutan Bertuah Anda</span>
             <span class="text-amber-500">•</span>
-            <span id="marqueeText2" class="px-6">Cabutan Bertuah Anda</span>
+            <span id="marqueeText2" class="px-8">Cabutan Bertuah Anda</span>
             <span class="text-amber-500">•</span>
           </div>
         </div>
-        <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">Imbas Kod QR untuk mendaftar & merebut <span class="text-amber-400 font-bold">Cip Nombor Bertuah</span></p>
-      </div>
-
-      <!-- Butang Tepi Mengapung: Rawakkan Giliran (Tidak ganggu roda bawah) -->
-      <div class="absolute top-4 left-4 z-20 flex flex-col gap-2">
-        <button onclick="shuffleParticipants()" class="px-3.5 py-2 bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-amber-400 border border-slate-700 hover:border-amber-400/50 font-bold text-xs rounded-xl transition active:scale-95 flex items-center gap-1.5 shadow-xl backdrop-blur">
-          <span class="text-sm">🔀</span>
-          <span class="hidden sm:inline">Rawakkan Giliran</span>
-        </button>
       </div>
 
       <!-- Bekas Roda Canvas & Jarum Penunjuk -->
@@ -998,6 +991,7 @@
 
     let audioContext = null;
     let ringInterval = null; // Pengulang deringan loceng berterusan
+    let lastTickTime = 0;
 
     function getAudioCtx() {
       if (!audioContext) {
@@ -1010,63 +1004,74 @@
       return audioContext;
     }
 
-    // Bunyi klik mekanikal jarum roda
+    // Bunyi klik mekanikal jarum roda (Ratchet tick dipertingkatkan & lebih nyaring)
     function playTick() {
       try {
         const ctx = getAudioCtx();
+        const now = ctx.currentTime;
+        // Elakkan kelesuan audio apabila hirisan roda mencecah 500 segmen
+        if (now - lastTickTime < 0.022) return;
+        lastTickTime = now;
+
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = "triangle";
-        osc.frequency.setValueAtTime(600, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.03);
-        gain.gain.setValueAtTime(0.08, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.03);
+        osc.frequency.setValueAtTime(950, now);
+        osc.frequency.exponentialRampToValueAtTime(180, now + 0.03);
+        
+        gain.gain.setValueAtTime(0.22, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+
         osc.connect(gain);
         gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.03);
+        osc.start(now);
+        osc.stop(now + 0.035);
       } catch(e) {}
     }
 
-    // Bunyi Loceng "Kring-Kring" Logam yang Ceria (Classic Mechanical Bell)
+    // Bunyi Loceng Logam Nyaring "KRRRIIIINNNNGGGG!" Panjang & Menggegarkan
     function playKringKring() {
       try {
         const ctx = getAudioCtx();
         const now = ctx.currentTime;
         
-        // Dua fasa deringan pantas "Kring... Kring!"
-        const bursts = [0, 0.32];
+        // Dua frekuensi nada loceng loyang nyaring (dual brass bell)
+        const bellFrequencies = [1980, 2520];
 
-        bursts.forEach(bOffset => {
-          const burstStart = now + bOffset;
-          // Setiap fasa ada 8 ketukan pantas mikro menghasilkan deringan bergetar
-          for (let i = 0; i < 8; i++) {
-            const strikeTime = burstStart + (i * 0.026);
-            
-            // Nada harmonik loceng logam (Frekuensi tinggi berkembar: 2150Hz & 2780Hz)
-            [2150, 2780].forEach((freq, idx) => {
-              const osc = ctx.createOscillator();
-              const gain = ctx.createGain();
-              
-              osc.type = "sine";
-              osc.frequency.setValueAtTime(freq + (idx * 40) + (i % 2 === 0 ? 30 : -30), strikeTime);
+        bellFrequencies.forEach((baseFreq) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
 
-              gain.gain.setValueAtTime(0, strikeTime);
-              gain.gain.linearRampToValueAtTime(0.18, strikeTime + 0.004);
-              gain.gain.exponentialRampToValueAtTime(0.001, strikeTime + 0.05);
+          // Modulator pemukul loceng mekanikal bergetar (19Hz) menghasilkan kesan "KRRRIIIINNNGGGG"
+          const clapperTremolo = ctx.createOscillator();
+          const clapperGain = ctx.createGain();
+          clapperTremolo.type = "sine";
+          clapperTremolo.frequency.setValueAtTime(19, now); // Getaran pukulan 19 kali sesaat
+          clapperGain.gain.setValueAtTime(0.5, now);
 
-              osc.connect(gain);
-              gain.connect(ctx.destination);
+          clapperTremolo.connect(clapperGain.gain);
 
-              osc.start(strikeTime);
-              osc.stop(strikeTime + 0.055);
-            });
-          }
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(baseFreq, now);
+
+          // Kelantangan tinggi dan bergema selama 1.3 saat
+          gain.gain.setValueAtTime(0.01, now);
+          gain.gain.linearRampToValueAtTime(0.4, now + 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 1.25);
+
+          clapperGain.connect(gain.gain);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          clapperTremolo.start(now);
+          osc.start(now);
+          clapperTremolo.stop(now + 1.3);
+          osc.stop(now + 1.3);
         });
 
-        // Getaran telefon mengikut corak deringan Kring-Kring
+        // Getaran telefon mengikut deringan KRRRIIIINNGGG
         if (navigator.vibrate) {
-          navigator.vibrate([220, 90, 220, 120, 300]);
+          navigator.vibrate([400, 80, 400, 80, 600]);
         }
       } catch(e) {}
     }
