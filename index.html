@@ -154,8 +154,11 @@
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             LIVE SYNC
           </span>
+          <span class="text-[11px] font-mono text-slate-400 bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700 hidden sm:inline-block">
+            Bilik: <b id="currentRoomCodeLabel" class="text-amber-400">dewan-1</b>
+          </span>
         </div>
-        <p id="topHeaderSub" class="text-[11px] text-slate-400">Penyegerakan Telefon Peserta & Skrin Pentas</p>
+        <p id="topHeaderSub" class="text-[11px] text-slate-400">Penyegerakan Telefon Peserta, Kupon Manual & Skrin Pentas</p>
       </div>
     </div>
 
@@ -198,10 +201,10 @@
     <!-- Bahagian Roda Impian Utama -->
     <section id="wheelSection" class="flex-1 flex flex-col items-center justify-between p-2 sm:p-4 relative transition-all duration-300 w-full overflow-hidden min-h-0">
       
-      <!-- Ruang Atas Bersih (Memberi ruang nafas kepada Roda Pentas) -->
+      <!-- Ruang Atas Bersih -->
       <div class="h-2 w-full"></div>
 
-      <!-- Bekas Roda Canvas & Jarum Penunjuk (Diselaraskan saiz agar muat cantik di atas footer) -->
+      <!-- Bekas Roda Canvas & Jarum Penunjuk -->
       <div id="wheelWrapper" class="relative flex items-center justify-center max-w-[92vw] max-h-[64vh] aspect-square my-auto transition-transform duration-300">
         <!-- Jarum Penunjuk Sebelah Kanan (Menunjuk ke kiri seperti foto pentas NIH AI DAY) -->
         <div class="wheel-pointer"></div>
@@ -209,7 +212,7 @@
         <!-- Canvas Roda -->
         <canvas id="wheelCanvas" width="1200" height="1200" class="w-[290px] h-[290px] sm:w-[410px] sm:h-[410px] lg:w-[500px] lg:h-[500px] rounded-full drop-shadow-2xl cursor-pointer active:scale-[0.99] transition-transform"></canvas>
 
-        <!-- Hab Logo Pusat Roda (Kamera Aperture Style seperti foto pentas) -->
+        <!-- Hab Logo Pusat Roda -->
         <div onclick="spinWheel()" class="absolute w-20 h-20 sm:w-32 sm:h-32 rounded-full bg-slate-950 shadow-2xl border-4 border-amber-400 flex flex-col items-center justify-center cursor-pointer hover:scale-105 active:scale-95 transition group z-20" title="Klik untuk putarkan roda!">
           <div class="w-14 h-14 sm:w-22 sm:h-22 rounded-full border border-slate-700 flex flex-col items-center justify-center p-1 text-center bg-slate-900 group-hover:bg-indigo-950/60 transition">
             <span class="text-[8px] sm:text-[10px] font-black text-amber-400 tracking-widest uppercase">PUTAR</span>
@@ -219,7 +222,7 @@
         </div>
       </div>
 
-      <!-- Footer Bar Tajuk Program di Bawah Roda (Kemas & Tidak Menutup Roda) -->
+      <!-- Footer Bar Tajuk Program di Bawah Roda -->
       <div class="w-full max-w-4xl mx-auto bg-slate-900/90 border border-slate-800 backdrop-blur px-4 py-2 rounded-xl flex items-center justify-center gap-2.5 shadow-lg z-10 mt-1 mb-1 overflow-hidden">
         <span class="px-2.5 py-0.5 rounded-lg bg-amber-400 text-slate-950 text-[10px] sm:text-[11px] font-black uppercase tracking-wider flex-shrink-0 shadow-sm">
           ACARA
@@ -240,19 +243,19 @@
 
     </section>
 
-    <!-- Panel Sisi Pengacara / Urus Setia (Boleh disorokkan untuk besarkan roda) -->
+    <!-- Panel Sisi Pengacara / Urus Setia -->
     <aside id="hostSidebar" class="w-full lg:w-[420px] bg-slate-900/95 border-t lg:border-t-0 lg:border-l border-slate-800 flex flex-col h-full min-h-0 overflow-hidden shadow-2xl z-30 transition-all duration-300">
       
       <!-- Input Nama Program Dalam Panel Urus Setia -->
       <div class="p-3.5 border-b border-slate-800 bg-slate-950/80 flex-shrink-0">
-        <label for="eventTitleInput" class="block text-[11px] font-black text-amber-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-          <span>🏷️</span>
-          <span>Tetapan Nama Program / Majlis:</span>
+        <label for="eventTitleInput" class="block text-[11px] font-black text-amber-400 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+          <span class="flex items-center gap-1.5">🏷️ Tetapan Nama Majlis:</span>
+          <button onclick="changeRoomPrompt()" class="text-[10px] text-indigo-400 hover:text-indigo-300 underline font-mono">Bilik: <span id="sidebarRoomCode">dewan-1</span> 🔄</button>
         </label>
         <input id="eventTitleInput" type="text" value="Cabutan Bertuah Anda" oninput="updateEventTitle(this.value)" placeholder="Masukkan nama program..." class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white font-bold text-xs sm:text-sm focus:border-amber-400 focus:ring-1 focus:ring-amber-400 focus:outline-none transition">
       </div>
 
-      <!-- Kad Kod QR Interaktif Dewan -->
+      <!-- Kad Kod QR Interaktif Dewan & Alat Kupon Manual -->
       <div class="p-4 border-b border-slate-800 bg-slate-950/60 flex-shrink-0">
         <div class="flex items-center justify-between mb-3">
           <div class="flex items-center gap-2">
@@ -264,7 +267,7 @@
           </button>
         </div>
 
-        <!-- Zon Kod QR: Boleh Diklik Untuk Dibesarkan -->
+        <!-- Zon Kod QR -->
         <div class="bg-white p-3.5 rounded-2xl flex items-center gap-3 shadow-lg border border-slate-200">
           <div onclick="openEnlargedQrModal()" class="w-24 h-24 bg-slate-100 flex items-center justify-center rounded-xl overflow-hidden flex-shrink-0 cursor-pointer hover:ring-4 hover:ring-indigo-500 transition relative group" title="Klik untuk membesarkan Kod QR di skrin projektor">
             <div id="qrcodeBox" class="w-full h-full flex items-center justify-center"></div>
@@ -275,38 +278,37 @@
           
           <div class="flex-1 text-slate-950">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-slate-900 leading-tight">IMBAS KOD PENDAFTARAN</span>
-              <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded cursor-pointer" onclick="openEnlargedQrModal()">🔍 Klik Zoom</span>
+              <span class="text-xs font-black text-slate-900 leading-tight">PENDAFTARAN PESERTA</span>
+              <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded cursor-pointer" onclick="openEnlargedQrModal()">🔍 Zoom</span>
             </div>
-            <p class="text-[11px] text-slate-600 mt-1 leading-snug">Peserta buka kamera telefon bimbit untuk daftar nama & dapatkan <b class="text-amber-700">Cip Bertuah</b>.</p>
+            <p class="text-[11px] text-slate-600 mt-1 leading-snug">Peserta bertelefon imbas QR untuk dapatkan <b class="text-amber-700">Cip Emas</b>.</p>
             
             <div class="mt-2.5 flex items-center gap-2">
               <button onclick="openEnlargedQrModal()" class="flex-1 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-[11px] font-bold shadow transition flex items-center justify-center gap-1">
                 🔍 Papar Besar
               </button>
-              <button onclick="printQrPoster()" class="py-1.5 px-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded-lg text-[11px] font-bold transition flex items-center gap-1" title="Cetak poster A4 untuk diedarkan di meja dewan">
-                🖨️ Cetak Poster
+              <button onclick="printQrPoster()" class="py-1.5 px-2 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded-lg text-[11px] font-bold transition flex items-center gap-1" title="Cetak poster A4">
+                🖨️ Cetak A4
               </button>
             </div>
           </div>
         </div>
 
-        <!-- Bar Keterangan Status Bilangan Peserta (Hingga 500+) -->
-        <div class="mt-3 flex items-center justify-between text-xs bg-slate-900 p-2 rounded-xl border border-slate-800">
+        <!-- Bar Kawalan Jumlah & Butang Penjana Kupon Manual -->
+        <div class="mt-3 flex flex-wrap items-center justify-between gap-1.5 text-xs bg-slate-900 p-2 rounded-xl border border-slate-800">
           <div class="flex items-center gap-2">
             <span class="text-slate-400">Penyertaan:</span>
             <span id="registeredCountBadge" class="font-black text-amber-400 font-mono text-sm">0 Peserta</span>
           </div>
-          <div class="flex items-center gap-1.5">
-            <button onclick="simulateAddCustom(50)" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-[10px] font-bold transition" title="Tambah 50 demo">
-              +50
+          
+          <!-- Butang Kupon Manual (Khas peserta tanpa telefon) & Ujian Demo -->
+          <div class="flex items-center gap-1">
+            <button onclick="openManualTicketModal()" class="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-lg text-[11px] transition shadow flex items-center gap-1" title="Jana siri nombor kupon manual (A001, B001, 1-100 dsb)">
+              <span>🎫</span>
+              <span>+ Kupon Manual</span>
             </button>
-            <button onclick="simulateAddCustom(100)" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-[10px] font-bold transition" title="Tambah 100 demo">
-              +100
-            </button>
-            <button onclick="simulateAddCustom(500)" class="px-2 py-1 bg-indigo-900/60 hover:bg-indigo-800 text-indigo-300 border border-indigo-700 rounded text-[10px] font-bold transition" title="Tambah sehingga 500 peserta">
-              +500 Full
-            </button>
+            <button onclick="simulateAddCustom(50)" class="px-1.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-[10px] font-bold" title="Tambah 50 demo">+50</button>
+            <button onclick="simulateAddCustom(500)" class="px-1.5 py-1 bg-indigo-900/60 hover:bg-indigo-800 text-indigo-300 border border-indigo-700 rounded text-[10px] font-bold" title="Ujian 500 demo">+500</button>
           </div>
         </div>
       </div>
@@ -323,18 +325,18 @@
         </button>
       </div>
 
-      <!-- Senarai Peserta Semasa (Boleh Skrol Bebas Secara Tersendiri) -->
+      <!-- Senarai Peserta Semasa -->
       <div id="contentParticipants" class="flex-1 p-3 overflow-y-auto min-h-0 space-y-1.5">
         <div class="flex items-center justify-between text-slate-400 text-[11px] px-2 py-1 font-bold sticky top-0 bg-slate-900/95 backdrop-blur z-10">
-          <span>NOMBOR CIP & NAMA</span>
-          <span>MASA MASUK</span>
+          <span>NOMBOR CIP & NAMA / KUPON</span>
+          <span>JENIS / MASA</span>
         </div>
         <div id="participantsList" class="space-y-1.5">
-          <div class="text-center py-12 text-slate-500 text-xs">Menunggu peserta mengimbas kod QR di dewan...</div>
+          <div class="text-center py-12 text-slate-500 text-xs">Menunggu peserta imbas QR atau kemasukan kupon manual...</div>
         </div>
       </div>
 
-      <!-- Senarai Pemenang Semasa (Boleh Skrol Bebas Secara Tersendiri) -->
+      <!-- Senarai Pemenang Semasa -->
       <div id="contentWinners" class="flex-1 p-3 overflow-y-auto min-h-0 space-y-1.5 hidden">
         <div class="flex items-center justify-between mb-2 px-1 sticky top-0 bg-slate-900/95 backdrop-blur z-10 py-1">
           <span class="text-xs font-bold text-amber-400">REKOD RASMI PEMENANG</span>
@@ -349,10 +351,10 @@
       <div class="p-3 bg-slate-950 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400 flex-shrink-0">
         <div class="flex items-center gap-1.5">
           <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-          <span>Kapasiti: <b class="text-slate-200">Menyokong 500+ Peserta</b></span>
+          <span>Sistem Hibrid: <b class="text-slate-200">Telefon & Tiket Kertas</b></span>
         </div>
         <div class="flex items-center gap-2">
-          <button onclick="copyDirectPlayerLink()" class="text-indigo-400 hover:text-indigo-300 font-bold">Salin Pautan Telefon</button>
+          <button onclick="copyDirectPlayerLink()" class="text-indigo-400 hover:text-indigo-300 font-bold">Salin Pautan</button>
           <span>•</span>
           <button onclick="resetEntireGame()" class="text-rose-400 hover:text-rose-300 font-bold">Reset Roda</button>
         </div>
@@ -393,10 +395,8 @@
       </div>
     </div>
 
-    <!-- Paparan Tiket Cip Emas Bertuah Peserta (Setelah Berjaya Daftar) -->
+    <!-- Paparan Tiket Cip Emas Bertuah Peserta -->
     <div id="playerChipCard" class="w-full flex flex-col items-center hidden">
-      
-      <!-- Kad Tiket Emas Digital -->
       <div class="w-full gold-chip rounded-3xl p-6 sm:p-8 text-slate-950 shadow-2xl border-2 border-yellow-200 text-center relative">
         <div class="flex justify-between items-center border-b border-amber-950/20 pb-2.5 mb-3">
           <span class="text-[11px] font-black uppercase tracking-widest text-amber-950">CIP BERTUAH RASMI</span>
@@ -414,7 +414,7 @@
         </div>
 
         <p class="text-[11px] text-amber-950 mt-4 font-bold leading-snug">
-          Kekalkan skrin telefon ini. Sekiranya nombor anda dipanggil, telefon anda akan memainkan bunyi loceng keraian secara automatik!
+          Kekalkan skrin telefon ini. Sekiranya nombor anda dipanggil, telefon anda akan membunyikan loceng keraian secara automatik!
         </p>
       </div>
 
@@ -430,10 +430,9 @@
           🔔 Uji Bunyi Kring Kring Telefon
         </button>
       </div>
-
     </div>
 
-    <!-- Halaman Penuh Penghargaan Peserta (Bila nombor dikeluarkan / permainan ditamatkan) -->
+    <!-- Halaman Penuh Penghargaan Peserta -->
     <div id="playerThanksPage" class="w-full bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center shadow-2xl flex-col items-center justify-center hidden">
       <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-amber-400 via-rose-500 to-indigo-600 flex items-center justify-center text-4xl shadow-xl mx-auto mb-4 animate-bounce">
         ✨
@@ -453,7 +452,7 @@
       </div>
     </div>
 
-    <!-- Paparan Skrin Kemenangan Pada Telefon Peserta (Melodi Ceria) -->
+    <!-- Paparan Skrin Kemenangan Pada Telefon Peserta -->
     <div id="playerWinnerOverlay" class="fixed inset-0 bg-rose-950/95 backdrop-blur-md z-50 flex flex-col items-center justify-center p-6 text-center opacity-0 pointer-events-none transition-opacity duration-300">
       <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-amber-300 to-yellow-400 flex items-center justify-center shadow-2xl mb-3 celebration-swing text-5xl border-4 border-white">
         🏆
@@ -482,7 +481,84 @@
 
   </main>
 
-  <!-- ================= MODAL KOD QR GERGASI UNTUK SKRIN PROJEKTOR DEWAN ================= -->
+  <!-- ================= MODAL 1: PENJANA KUPON / TIKET MANUAL (PESERTA TANPA TELEFON) ================= -->
+  <div id="manualTicketModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-slate-900 rounded-3xl border-2 border-amber-400 max-w-lg w-full p-5 sm:p-7 shadow-2xl text-left relative">
+      
+      <button onclick="closeManualTicketModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 text-xl font-black">
+        ✕
+      </button>
+
+      <div class="flex items-center gap-2.5 mb-2">
+        <span class="p-2 rounded-xl bg-amber-400 text-slate-950 text-lg">🎫</span>
+        <div>
+          <h3 class="text-lg sm:text-xl font-black text-white">Jana Kupon / Nombor Siri Manual</h3>
+          <p class="text-xs text-slate-400">Untuk peserta yang memegang tiket fizikal atau tidak membawa telefon.</p>
+        </div>
+      </div>
+
+      <div class="mt-4 space-y-3.5 text-xs">
+        
+        <!-- Awalan Prefix & Label -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-300 mb-1">Awalan Huruf / Prefix (Pilihan):</label>
+            <input type="text" id="manualPrefix" placeholder="Cth: A, B, VIP, atau kosongkan" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white font-bold uppercase focus:border-amber-400 outline-none">
+            <span class="text-[10px] text-slate-500">Contoh: 'A' akan hasilkan A001, A002...</span>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-300 mb-1">Format Digit / Padding Sifar:</label>
+            <select id="manualDigitFormat" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white font-bold focus:border-amber-400 outline-none">
+              <option value="3" selected>3 Digit (001, 002... 020, 100)</option>
+              <option value="1">Tanpa Sifar (1, 2... 20, 100)</option>
+              <option value="2">2 Digit (01, 02... 20, 99)</option>
+              <option value="4">4 Digit (0001, 0002... 0100)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Julat Dari - Hingga -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-300 mb-1">Nombor Mula (Dari):</label>
+            <input type="number" id="manualStartNum" value="1" min="1" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white font-bold font-mono focus:border-amber-400 outline-none">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-300 mb-1">Nombor Akhir (Hingga):</label>
+            <input type="number" id="manualEndNum" value="50" min="1" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white font-bold font-mono focus:border-amber-400 outline-none">
+          </div>
+        </div>
+
+        <!-- Label Tambahan -->
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">Label Catatan (Pilihan):</label>
+          <input type="text" id="manualNote" placeholder="Cth: Kupon Kertas, Tiket Meja, Pendaftaran Kaunter" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white focus:border-amber-400 outline-none">
+        </div>
+
+        <!-- Pratonton Siri -->
+        <div class="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-[11px]">
+          <span class="text-slate-400">Pratonton Hasil: </span>
+          <span id="manualPreviewBadge" class="font-mono font-black text-amber-400">A001, A002, A003 ... A050</span>
+          <span class="block text-[10px] text-slate-500 mt-0.5">Jumlah kupon dijana: <b id="manualTotalCount" class="text-white">50</b> kupon</span>
+        </div>
+
+        <!-- Butang Tindakan -->
+        <div class="pt-2 flex items-center justify-end gap-2">
+          <button onclick="closeManualTicketModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold transition">
+            Batal
+          </button>
+          <button onclick="generateAndInjectManualTickets()" class="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl shadow-lg transition flex items-center gap-1.5">
+            <span>✨ Masukkan Siri Kupon ke Roda</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= MODAL 2: KOD QR GERGASI UNTUK SKRIN PROJEKTOR DEWAN ================= -->
   <div id="enlargedQrModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
     <div class="bg-slate-900 rounded-3xl border-2 border-amber-400 max-w-xl w-full p-6 sm:p-8 text-center shadow-2xl relative">
       
@@ -512,7 +588,7 @@
     </div>
   </div>
 
-  <!-- ================= MODAL KEPUTUSAN PEMENANG RASMI PENTAS ================= -->
+  <!-- ================= MODAL 3: KEPUTUSAN PEMENANG RASMI PENTAS ================= -->
   <div id="hostWinnerModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
     <div id="hostWinnerCard" class="bg-slate-900 rounded-3xl shadow-2xl max-w-lg w-full p-6 sm:p-8 text-center border-4 border-amber-400 transform scale-90 transition-transform duration-300 relative overflow-hidden">
       
@@ -531,26 +607,29 @@
           NAMA PEMENANG
         </p>
         <p id="modalWinnerDept" class="text-xs font-bold text-slate-300 mt-1">Bahagian / Meja Peserta</p>
+        <span id="modalWinnerTypeTag" class="inline-block mt-2 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30">
+          📱 Peserta Telefon Bimbit
+        </span>
       </div>
 
-      <p class="text-xs text-slate-400 mb-6">
+      <p id="modalWinnerInstruction" class="text-xs text-slate-400 mb-6">
         Loceng penggera ceria telah dibunyikan pada telefon pemenang. Sila tunggu pemenang tampil dengan slip emas di pentas.
       </p>
 
       <!-- Butang Pilihan Pengacara: Buang Atau Kekal Nombor -->
       <div class="flex flex-col sm:flex-row gap-2.5">
         <button onclick="hostRemoveWinner()" class="flex-1 py-3 px-4 bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-black rounded-xl text-xs sm:text-sm transition shadow-md">
-          🗑️ Buang Nama (Keluarkan dari Roda)
+          🗑️ Buang Nombor (Keluarkan dari Roda)
         </button>
         <button onclick="hostKeepWinner()" class="flex-1 py-3 px-4 bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-200 font-bold rounded-xl text-xs sm:text-sm transition">
-          Kekalkan Nama Dalam Roda
+          Kekalkan Nombor Dalam Roda
         </button>
       </div>
 
     </div>
   </div>
 
-  <!-- ================= POSTER KOD QR CETAKAN A4 UNTUK DIEDARKAN DI MEJA ================= -->
+  <!-- ================= POSTER KOD QR CETAKAN A4 ================= -->
   <section id="printPosterSection" class="hidden">
     <div style="text-align: center; max-width: 600px;">
       <h1 style="font-size: 32px; font-weight: 900; margin-bottom: 5px; color: #000;" id="printEventTitle">NIH AI DAY 2026</h1>
@@ -589,20 +668,16 @@
         } catch (e) {}
 
         if (!r) {
-          // Tetapkan bilik lalai
           r = 'dewan-1';
         }
 
-        // Kemaskini URL hanya jika bukan dalam persekitaran blob/preview
         try {
           if (window.location.protocol !== 'blob:' && window.history && window.history.replaceState) {
             const newUrl = new URL(window.location.href);
             newUrl.searchParams.set('room', r);
             window.history.replaceState({}, '', newUrl.toString());
           }
-        } catch (e) {
-          // Abaikan ralat keselamatan jika berjalan dalam sandbox iframe
-        }
+        } catch (e) {}
       }
 
       r = r.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '') || 'dewan-1';
@@ -613,7 +688,6 @@
     }
 
     const ROOM_CODE = resolveRoomCode();
-    // Kunci storan diasingkan khusus untuk bilik acara ini sahaja
     const STATE_KEY = `roda_bertuah_data_v3_${ROOM_CODE}`;
     const WINNER_EVENT_KEY = `roda_bertuah_latest_winner_v3_${ROOM_CODE}`;
     const PARTICIPANT_STATUS_KEY = `roda_bertuah_participant_status_v3_${ROOM_CODE}`;
@@ -621,7 +695,7 @@
     let appState = {
       eventTitle: 'Cabutan Bertuah Anda',
       isRegistrationOpen: true,
-      participants: [], // { id, number, name, dept, timestamp }
+      participants: [], // { id, number, name, dept, timestamp, isManual }
       winners: []
     };
 
@@ -645,14 +719,113 @@
     const hostView = document.getElementById("hostView");
     const playerView = document.getElementById("playerView");
 
-    // Sambungan PeerJS (WebRTC) untuk Live Sync Telefon ke Laptop Skrin Dewan
+    // Audio Context Web Audio API
+    let audioCtx = null;
+    let phoneAlarmInterval = null;
+
+    function getAudioCtx() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    // Bunyi klik mekanikal jarum roda (Ratchet tick)
+    let lastTickTime = 0;
+    function playTick() {
+      const now = performance.now();
+      if (now - lastTickTime < 25) return;
+      lastTickTime = now;
+
+      try {
+        const actx = getAudioCtx();
+        const osc = actx.createOscillator();
+        const gain = actx.createGain();
+
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(950, actx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(120, actx.currentTime + 0.035);
+
+        gain.gain.setValueAtTime(0.4, actx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.035);
+
+        osc.connect(gain);
+        gain.connect(actx.destination);
+
+        osc.start();
+        osc.stop(actx.currentTime + 0.04);
+      } catch (e) {}
+    }
+
+    // Bunyi deringan logam "KRRRRIIIINNNNGGGG!" bertenaga
+    function playKringKring() {
+      try {
+        const actx = getAudioCtx();
+        const now = actx.currentTime;
+        const duration = 1.35;
+
+        // Dua tala frekuensi nada tinggi untuk bunyi loceng
+        const freqs = [1980, 2520];
+        freqs.forEach(f => {
+          const carrier = actx.createOscillator();
+          carrier.type = "sine";
+          carrier.frequency.setValueAtTime(f, now);
+
+          // Tremolo penggetar ketukan loceng (19 kali sesaat)
+          const modOsc = actx.createOscillator();
+          modOsc.type = "square";
+          modOsc.frequency.setValueAtTime(19, now);
+
+          const modGain = actx.createGain();
+          modGain.gain.setValueAtTime(0.35, now);
+
+          const masterGain = actx.createGain();
+          masterGain.gain.setValueAtTime(0.5, now);
+          masterGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+          modOsc.connect(modGain.gain);
+          carrier.connect(modGain);
+          modGain.connect(masterGain);
+          masterGain.connect(actx.destination);
+
+          carrier.start(now);
+          modOsc.start(now);
+
+          carrier.stop(now + duration);
+          modOsc.stop(now + duration);
+        });
+
+        if (navigator.vibrate) {
+          navigator.vibrate([200, 100, 200, 100, 300]);
+        }
+      } catch (e) {}
+    }
+
+    function startContinuousRinging() {
+      stopPhoneAlarm();
+      playKringKring();
+      phoneAlarmInterval = setInterval(() => {
+        playKringKring();
+      }, 1600);
+    }
+
+    function stopPhoneAlarm() {
+      if (phoneAlarmInterval) {
+        clearInterval(phoneAlarmInterval);
+        phoneAlarmInterval = null;
+      }
+    }
+
+    // Sambungan PeerJS (WebRTC)
     let peer = null;
     let peerConnections = [];
 
     function initPeerSync() {
       try {
         if (currentRole === 'host') {
-          // Hos laptop mencipta ID unik berasaskan room code
           const hostPeerId = `roda-host-${ROOM_CODE}`;
           peer = new Peer(hostPeerId);
 
@@ -676,7 +849,6 @@
           });
 
         } else {
-          // Telefon peserta berhubung terus ke ID hos laptop
           peer = new Peer();
           peer.on('open', () => {
             const hostPeerId = `roda-host-${ROOM_CODE}`;
@@ -698,7 +870,7 @@
           });
         }
       } catch (err) {
-        console.warn("WebRTC tidak disokong, fallback ke storan penyemak imbas.", err);
+        console.warn("WebRTC tidak disokong, fallback ke storan tempatan.", err);
       }
     }
 
@@ -730,13 +902,14 @@
           number: formattedNum,
           name: data.name,
           dept: data.dept ? data.dept.trim() : '',
-          timestamp: new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' })
+          timestamp: new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' }),
+          isManual: false
         };
 
         appState.participants.push(newParticipant);
         saveState();
         conn.send({ type: 'REGISTER_SUCCESS', participant: newParticipant });
-        showNotice(`🎉 Peserta baru: ${newParticipant.name} (${newParticipant.number})`);
+        showNotice(`🎉 Peserta telefon: ${newParticipant.name} (${newParticipant.number})`);
       }
     }
 
@@ -762,7 +935,7 @@
       }
     }
 
-    // Fungsi Sorokkan / Buka Panel Sisi untuk Membesarkan Roda
+    // Sorokkan / Buka Panel Sisi
     function toggleSidebar() {
       const sidebar = document.getElementById("hostSidebar");
       const toggleText = document.getElementById("toggleSidebarText");
@@ -776,7 +949,6 @@
         if (toggleText) toggleText.innerText = "Buka Panel";
         if (toggleIcon) toggleIcon.innerText = "▶";
         
-        // Besarkan paparan roda secara optimum apabila panel disorokkan
         wheelCanvas.classList.remove("lg:w-[500px]", "lg:h-[500px]");
         wheelCanvas.classList.add("lg:w-[620px]", "lg:h-[620px]");
         showNotice("🔍 Roda dibesarkan untuk skrin pentas.");
@@ -785,7 +957,6 @@
         if (toggleText) toggleText.innerText = "Sorok Panel";
         if (toggleIcon) toggleIcon.innerText = "◀";
 
-        // Kembalikan saiz biasa
         wheelCanvas.classList.remove("lg:w-[620px]", "lg:h-[620px]");
         wheelCanvas.classList.add("lg:w-[500px]", "lg:h-[500px]");
       }
@@ -799,7 +970,7 @@
     }
 
     function changeRoomPrompt() {
-      const newRoom = window.prompt("Masukkan Kod Bilik / Nama Acara (Contoh: dewan-a, nih-2026, dewan-anggerik):", ROOM_CODE);
+      const newRoom = window.prompt("Masukkan Kod Bilik / Nama Acara (Contoh: dewan-a, dewan-anggerik, nih-2026):", ROOM_CODE);
       if (newRoom && newRoom.trim() && newRoom.trim() !== ROOM_CODE) {
         const clean = newRoom.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
         try {
@@ -861,13 +1032,11 @@
     }
 
     function openEnlargedQrModal() {
-      const modal = document.getElementById("enlargedQrModal");
-      modal.classList.remove("opacity-0", "pointer-events-none");
+      document.getElementById("enlargedQrModal").classList.remove("opacity-0", "pointer-events-none");
     }
 
     function closeEnlargedQrModal() {
-      const modal = document.getElementById("enlargedQrModal");
-      modal.classList.add("opacity-0", "pointer-events-none");
+      document.getElementById("enlargedQrModal").classList.add("opacity-0", "pointer-events-none");
     }
 
     function printQrPoster() {
@@ -887,6 +1056,102 @@
       showNotice("📋 Pautan telefon peserta berjaya disalin!");
     }
 
+    // ================= FUNGSI KHAS: PENJANA KUPON / NOMBOR SIRI MANUAL =================
+    function openManualTicketModal() {
+      updateManualPreview();
+      document.getElementById("manualTicketModal").classList.remove("opacity-0", "pointer-events-none");
+    }
+
+    function closeManualTicketModal() {
+      document.getElementById("manualTicketModal").classList.add("opacity-0", "pointer-events-none");
+    }
+
+    function updateManualPreview() {
+      const prefix = (document.getElementById("manualPrefix").value || '').trim().toUpperCase();
+      const padOption = parseInt(document.getElementById("manualDigitFormat").value, 10);
+      const start = parseInt(document.getElementById("manualStartNum").value, 10) || 1;
+      const end = parseInt(document.getElementById("manualEndNum").value, 10) || 1;
+
+      const count = Math.max(0, end - start + 1);
+      document.getElementById("manualTotalCount").innerText = count;
+
+      if (count <= 0) {
+        document.getElementById("manualPreviewBadge").innerText = "Julat nombor tidak sah!";
+        return;
+      }
+
+      function formatNum(n) {
+        let str = String(n);
+        if (padOption > 1) {
+          str = str.padStart(padOption, '0');
+        }
+        return prefix ? `${prefix}${str}` : str;
+      }
+
+      const sample1 = formatNum(start);
+      const sample2 = count > 1 ? formatNum(start + 1) : '';
+      const sampleEnd = count > 2 ? formatNum(end) : '';
+
+      let text = sample1;
+      if (sample2) text += `, ${sample2}`;
+      if (count > 3) text += ` ... `;
+      if (sampleEnd && count > 2) text += sampleEnd;
+
+      document.getElementById("manualPreviewBadge").innerText = text;
+    }
+
+    // Pasang event listener untuk kemaskini pratonton
+    ["manualPrefix", "manualDigitFormat", "manualStartNum", "manualEndNum"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener("input", updateManualPreview);
+        el.addEventListener("change", updateManualPreview);
+      }
+    });
+
+    function generateAndInjectManualTickets() {
+      const prefix = (document.getElementById("manualPrefix").value || '').trim().toUpperCase();
+      const padOption = parseInt(document.getElementById("manualDigitFormat").value, 10);
+      const start = parseInt(document.getElementById("manualStartNum").value, 10) || 1;
+      const end = parseInt(document.getElementById("manualEndNum").value, 10) || 1;
+      const note = (document.getElementById("manualNote").value || '').trim() || 'Kupon Fizikal';
+
+      if (end < start) {
+        alert("Nombor akhir mestilah lebih besar atau sama dengan nombor mula!");
+        return;
+      }
+
+      const totalToAdd = (end - start + 1);
+      if (totalToAdd > 1000) {
+        if (!confirm(`Anda akan menjana ${totalToAdd} kupon manual sekaligus. Teruskan?`)) {
+          return;
+        }
+      }
+
+      const timeNow = new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' });
+
+      for (let i = start; i <= end; i++) {
+        let numStr = String(i);
+        if (padOption > 1) {
+          numStr = numStr.padStart(padOption, '0');
+        }
+        const fullNumber = prefix ? `${prefix}${numStr}` : numStr;
+
+        appState.participants.push({
+          id: 'manual_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+          number: fullNumber,
+          name: `Kupon ${fullNumber}`,
+          dept: note,
+          timestamp: timeNow,
+          isManual: true
+        });
+      }
+
+      saveState();
+      closeManualTicketModal();
+      showNotice(`🎫 Berjaya menambah ${totalToAdd} kupon manual ke dalam roda!`);
+    }
+
     function switchView(view) {
       currentRole = view;
       const navHost = document.getElementById("viewSwitchBtnHost");
@@ -900,7 +1165,7 @@
         if (navHost) navHost.className = "px-2.5 py-1 rounded font-bold bg-indigo-600 text-white shadow";
         if (navPlayer) navPlayer.className = "px-2.5 py-1 rounded font-semibold text-slate-400 hover:text-white";
         headerTitle.innerText = "RODA CABUTAN BERTUAH LIVE";
-        headerSub.innerText = "Penyegerakan Telefon Peserta & Skrin Pentas";
+        headerSub.innerText = "Penyegerakan Telefon Peserta, Kupon Manual & Skrin Pentas";
         drawWheel();
       } else {
         hostView.classList.add('hidden');
@@ -920,7 +1185,6 @@
       const text1 = document.getElementById("marqueeText1");
       const text2 = document.getElementById("marqueeText2");
       
-      // Jika teks lebih 25 aksara, paparkan mod marquee bergerak
       if (appState.eventTitle.length > 25) {
         if (staticTitle) staticTitle.parentElement.classList.add("hidden");
         if (marqueeBox) {
@@ -968,7 +1232,6 @@
         return;
       }
 
-      // Jika ada sambungan aktif ke hos melalui WebRTC
       if (window.activeHostConn && window.activeHostConn.open) {
         window.activeHostConn.send({
           type: 'REGISTER',
@@ -987,7 +1250,8 @@
         number: formattedNum,
         name: name,
         dept: dept,
-        timestamp: new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' })
+        timestamp: new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' }),
+        isManual: false
       };
 
       appState.participants.push(newParticipant);
@@ -1038,6 +1302,20 @@
       }
     }
 
+    function showPlayerThanksPage(customMsg) {
+      sessionStorage.removeItem('my_lucky_chip_number');
+      document.getElementById("playerRegCard").classList.add("hidden");
+      document.getElementById("playerChipCard").classList.add("hidden");
+      document.getElementById("playerWinnerOverlay").classList.add("opacity-0", "pointer-events-none");
+      
+      const thanksBox = document.getElementById("playerThanksPage");
+      if (customMsg) {
+        document.getElementById("thanksPageMessage").innerText = customMsg;
+      }
+      thanksBox.classList.remove("hidden");
+      thanksBox.classList.add("flex");
+    }
+
     function testPhoneChime() {
       getAudioCtx();
       playKringKring();
@@ -1066,7 +1344,7 @@
         ctx.font = "bold 32px 'Plus Jakarta Sans', sans-serif";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText("SILA IMBAS KOD QR UNTUK MASUK", center, center);
+        ctx.fillText("SILA IMBAS QR ATAU TAMBAH KUPON", center, center);
         return;
       }
 
@@ -1084,12 +1362,10 @@
         ctx.fillStyle = WHEEL_PALETTE[i % WHEEL_PALETTE.length];
         ctx.fill();
 
-        // Garisan pembahagi jejari
         ctx.lineWidth = total > 150 ? 0.6 : 1.5;
         ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
         ctx.stroke();
 
-        // Teks Nama (Hanya dipaparkan jika muat, agar tidak bertindih pada 500 peserta)
         if (total <= 120) {
           ctx.save();
           ctx.translate(center, center);
@@ -1112,7 +1388,7 @@
         }
       }
 
-      // Bingkai luar roda emas berkilat
+      // Bingkai luar roda
       ctx.beginPath();
       ctx.arc(center, center, radius, 0, 2 * Math.PI);
       ctx.lineWidth = 14;
@@ -1129,7 +1405,7 @@
     function spinWheel() {
       if (isSpinning) return;
       if (appState.participants.length === 0) {
-        showNotice("Tiada peserta berdaftar untuk diputar lagi.");
+        showNotice("Tiada peserta/kupon berdaftar untuk diputar.");
         return;
       }
 
@@ -1140,7 +1416,6 @@
       const arcSize = (2 * Math.PI) / total;
       const winningIndex = Math.floor(Math.random() * total);
 
-      // Jarum di sebelah KANAN roda dewan (Sudut 0 atau 2PI radian)
       const targetCenterAngle = (2 * Math.PI) - ((winningIndex * arcSize) + (arcSize / 2));
       const fullRotations = (9 + Math.floor(Math.random() * 4)) * (2 * Math.PI);
 
@@ -1182,7 +1457,8 @@
       playKringKring();
       launchConfetti();
 
-      // Hantar isyarat menang ke semua telefon peserta yang bersambung
+      // Maklumat pemenang
+      const isManual = winner.isManual || false;
       const winEvent = {
         type: 'WINNER_ANNOUNCED',
         winnerNumber: winner.number,
@@ -1190,17 +1466,14 @@
         time: Date.now()
       };
 
-      // 1. Siarkan melalui WebRTC ke semua telefon peserta
-      peerConnections.forEach(conn => {
-        try {
-          conn.send(winEvent);
-        } catch(e) {}
-      });
+      if (!isManual) {
+        peerConnections.forEach(conn => {
+          try { conn.send(winEvent); } catch(e) {}
+        });
+        localStorage.setItem(WINNER_EVENT_KEY, JSON.stringify(winEvent));
+      }
 
-      // 2. Siarkan melalui storan tempatan jika diuji dalam penyemak imbas yang sama
-      localStorage.setItem(WINNER_EVENT_KEY, JSON.stringify(winEvent));
-
-      // Paparkan keputusan pada skrin dewan
+      // Paparan modal keputusan pada skrin pentas
       document.getElementById("modalWinnerBadge").innerText = winner.number;
       document.getElementById("modalWinnerName").innerText = winner.name;
       const modalDept = document.getElementById("modalWinnerDept");
@@ -1209,13 +1482,28 @@
         modalDept.style.display = winner.dept ? 'block' : 'none';
       }
 
+      const typeTag = document.getElementById("modalWinnerTypeTag");
+      const instructionText = document.getElementById("modalWinnerInstruction");
+
+      if (isManual) {
+        typeTag.className = "inline-block mt-2 px-3 py-1 rounded-md text-[11px] font-black bg-amber-400 text-slate-950 border border-amber-300";
+        typeTag.innerHTML = "🎟️ TIKET / KUPON FIZIKAL MANUAL";
+        instructionText.innerText = "Peserta memegang keratan tiket fizikal. Sila jemput pemenang naik ke pentas menunjukkan nombor tiket manual mereka!";
+      } else {
+        typeTag.className = "inline-block mt-2 px-3 py-1 rounded-md text-[11px] font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-400/30";
+        typeTag.innerHTML = "📱 Pendaftaran Telefon Bimbit";
+        instructionText.innerText = "Loceng penggera telah dibunyikan pada telefon pemenang. Sila tunggu pemenang tampil dengan slip emas di pentas.";
+      }
+
       const modal = document.getElementById("hostWinnerModal");
       const card = document.getElementById("hostWinnerCard");
       modal.classList.remove("opacity-0", "pointer-events-none");
       card.classList.remove("scale-90");
       card.classList.add("scale-100");
 
-      checkIfCurrentDeviceWon(winner.number, winner.name);
+      if (!isManual) {
+        checkIfCurrentDeviceWon(winner.number, winner.name);
+      }
     }
 
     function hostRemoveWinner() {
@@ -1228,8 +1516,9 @@
         appState.participants = appState.participants.filter(p => p.number !== currentWinningParticipant.number);
         saveState();
 
-        // Maklumkan telefon pemenang bahawa nombornya dikeluarkan bersama pop-up penghargaan
-        broadcastParticipantRemoved(removedNum);
+        if (!currentWinningParticipant.isManual) {
+          broadcastParticipantRemoved(removedNum);
+        }
       }
       closeHostWinnerModal();
       showNotice("Nombor pemenang telah dikeluarkan dari roda cabutan.");
@@ -1270,7 +1559,7 @@
     function checkIfCurrentDeviceWon(winnerNumber, winnerName) {
       const myNumber = sessionStorage.getItem('my_lucky_chip_number');
       if (myNumber && myNumber === winnerNumber) {
-        startContinuousRinging(); // Dering berterusan!
+        startContinuousRinging();
         const overlay = document.getElementById("playerWinnerOverlay");
         document.getElementById("winnerOverlayCode").innerText = winnerNumber;
         document.getElementById("winnerOverlayName").innerText = winnerName;
@@ -1307,18 +1596,21 @@
       // Senarai Peserta
       const pContainer = document.getElementById("participantsList");
       if (appState.participants.length === 0) {
-        pContainer.innerHTML = '<div class="text-center py-10 text-slate-500 text-xs">Belum ada peserta berdaftar. Sila imbas QR di atas!</div>';
+        pContainer.innerHTML = '<div class="text-center py-10 text-slate-500 text-xs">Belum ada peserta berdaftar. Sila imbas QR atau tambah kupon manual!</div>';
       } else {
         pContainer.innerHTML = appState.participants.slice().reverse().map(p => `
           <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950/60 border border-slate-800 text-xs">
             <div class="flex items-center gap-2">
-              <span class="font-mono font-black text-amber-400 px-2 py-0.5 bg-amber-400/10 rounded border border-amber-400/20">${p.number}</span>
+              <span class="font-mono font-black ${p.isManual ? 'text-amber-300 bg-amber-400/20 border-amber-400/40' : 'text-indigo-300 bg-indigo-500/20 border-indigo-400/30'} px-2 py-0.5 rounded border">${p.number}</span>
               <div>
                 <span class="font-bold text-slate-200">${escapeHtml(p.name)}</span>
                 ${p.dept ? `<span class="text-[10px] text-slate-400 block">${escapeHtml(p.dept)}</span>` : ''}
               </div>
             </div>
-            <span class="text-[10px] text-slate-500 font-mono">${p.timestamp}</span>
+            <div class="text-right">
+              <span class="text-[10px] font-mono text-slate-400 block">${p.timestamp}</span>
+              <span class="text-[9px] font-bold ${p.isManual ? 'text-amber-400' : 'text-indigo-400'}">${p.isManual ? '🎫 Kupon' : '📱 Telefon'}</span>
+            </div>
           </div>
         `).join("");
       }
@@ -1340,7 +1632,10 @@
                 ${w.dept ? `<span class="text-[10px] text-slate-400">${escapeHtml(w.dept)}</span>` : ''}
               </div>
             </div>
-            <span class="text-[10px] text-amber-400/80 font-mono">${w.wonAt}</span>
+            <div class="text-right">
+              <span class="text-[10px] text-amber-400/80 font-mono block">${w.wonAt}</span>
+              <span class="text-[9px] font-bold ${w.isManual ? 'text-amber-300' : 'text-indigo-300'}">${w.isManual ? 'Kupon' : 'Telefon'}</span>
+            </div>
           </div>
         `).join("");
       }
@@ -1374,31 +1669,28 @@
           number: `#${String(num).padStart(3, '0')}`,
           name: `Peserta Ujian #${num}`,
           dept: `Meja ${((num % 30) + 1)}`,
-          timestamp: new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' })
+          timestamp: new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' }),
+          isManual: false
         });
       }
       saveState();
       showNotice(`⚡ Ditambah ${count} peserta! Jumlah semasa: ${appState.participants.length}`);
     }
 
-    // Fungsi Rawakkan Giliran dengan Kesan Animasi Kocokan Roda Secara Visual
     function shuffleParticipants() {
       if (isSpinning || appState.participants.length <= 1) return;
 
-      // Animasi getaran kocokan pada roda
       const canvasElem = document.getElementById("wheelCanvas");
       canvasElem.classList.add("wheel-shuffling");
       setTimeout(() => {
         canvasElem.classList.remove("wheel-shuffling");
       }, 700);
 
-      // Kocok peserta
       for (let i = appState.participants.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [appState.participants[i], appState.participants[j]] = [appState.participants[j], appState.participants[i]];
       }
 
-      // Beri sedikit lonjakan putaran rawak untuk visualisasi kedudukan baru
       currentAngle += (Math.random() * 2 + 1);
       saveState();
       playTick();
@@ -1412,12 +1704,12 @@
     }
 
     function resetEntireGame() {
+      if (!confirm("Adakah anda pasti mahu mereset semua data roda untuk bilik ini?")) return;
       appState.participants = [];
       appState.winners = [];
       appState.isRegistrationOpen = true;
       saveState();
 
-      // Siarkan makluman penamatan permainan ke semua telefon peserta
       const resetEvent = { type: 'GAME_RESET', time: Date.now() };
       peerConnections.forEach(conn => {
         try { conn.send(resetEvent); } catch(e) {}
@@ -1469,7 +1761,6 @@
         }
       } catch (e) {}
       
-      // Default tajuk jika tiada
       if (!appState.eventTitle) {
         appState.eventTitle = 'Cabutan Bertuah Anda';
       }
@@ -1504,6 +1795,7 @@
       }
     });
 
+    // Konfeti
     const confettiCanvas = document.getElementById("confettiCanvas");
     const confettiCtx = confettiCanvas.getContext("2d");
     let confettiParticles = [];
@@ -1575,14 +1867,14 @@
     });
 
     window.addEventListener("DOMContentLoaded", () => {
-      // Paparkan kod bilik semasa di panel kawalan
       const roomLabel = document.getElementById("currentRoomCodeLabel");
       if (roomLabel) roomLabel.innerText = ROOM_CODE;
+      const sbRoomLabel = document.getElementById("sidebarRoomCode");
+      if (sbRoomLabel) sbRoomLabel.innerText = ROOM_CODE;
 
       loadState();
       initQRCodes();
 
-      // Semak sama ada pautan dibuka dari imbasan telefon peserta
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('role') === 'player') {
         switchView('player');
@@ -1590,7 +1882,6 @@
         switchView('host');
       }
 
-      // Mulakan sambungan live WebRTC
       initPeerSync();
     });
   </script>
